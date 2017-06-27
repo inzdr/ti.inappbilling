@@ -258,7 +258,7 @@ public class IabHelper {
                 }
 
                 if (listener != null) {
-                    listener.onIabSetupFinished(new IabResult(BILLING_RESPONSE_RESULT_OK, "Setup successful."));
+                    listener.onIabSetupFinished(new IabResult(BILLING_RESPONSE_RESULT_OK, "Setup successful.", mSubscriptionsSupported));
                 }
             }
         };
@@ -278,7 +278,7 @@ public class IabHelper {
             }
         }
     }
-    
+
     /**
      * Dispose of object, releasing resources. It's very important to call this
      * method when you are done with this object. It will release any resources
@@ -301,6 +301,10 @@ public class IabHelper {
 
     private void checkNotDisposed() {
         if (mDisposed) throw new IllegalStateException("IabHelper was disposed of, so it cannot be used.");
+    }
+
+    public boolean isDisposed() {
+      return this.mDisposed;
     }
 
     /** Returns whether subscriptions are supported. */
@@ -403,14 +407,14 @@ public class IabHelper {
             mRequestCode = requestCode;
             mPurchaseListener = listener;
             mPurchasingItemType = itemType;
-            
+
             // Appc: launching this pending intent using TiActivitySupport.launchIntentSenderForResult rather than
             // startIntentSenderForResult so we can get the result.
             TiActivityResultHandler wrapper = new TiActivityResultHandler() {
     			public void onError(Activity activity, int requestCode, Exception e)
     			{
     				flagEndAsync();
-    				
+
     				IabResult errorResult = new IabResult(IABHELPER_SEND_INTENT_FAILED, "Failed to send intent.");
     	            if (listener != null) listener.onIabPurchaseFinished(errorResult, null);
     			}
@@ -420,7 +424,7 @@ public class IabHelper {
     				handleActivityResult(requestCode, resultCode, data);
     			}
     		};
-            
+
             TiActivitySupport activitySupport = (TiActivitySupport) act;
             activitySupport.launchIntentSenderForResult(pendingIntent.getIntentSender(),
                                            requestCode, new Intent(),
@@ -628,7 +632,7 @@ public class IabHelper {
                                final QueryInventoryFinishedListener listener) {
     	queryInventoryAsync(querySkuDetails, moreSkus, null, listener);
     }
-    
+
     // Appc: changed the signature of this method to take lists of items and subs
     // public void queryInventoryAsync(final boolean querySkuDetails,
     //        final List<String> moreSkus,

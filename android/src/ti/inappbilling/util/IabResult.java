@@ -25,21 +25,29 @@ package ti.inappbilling.util;
  */
 public class IabResult {
     int mResponse;
+    boolean mSubscriptionsSupported;
     String mMessage;
 
     public IabResult(int response, String message) {
-        mResponse = response;
-        if (message == null || message.trim().length() == 0) {
-            mMessage = IabHelper.getResponseDesc(response);
-        }
-        else {
-            mMessage = message + " (response: " + IabHelper.getResponseDesc(response) + ")";
-        }
+        this(response, message, false);
     }
+
+    public IabResult(int response, String message, boolean subscriptionsSupported) {
+      mResponse = response;
+      if (message == null || message.trim().length() == 0) {
+          mMessage = IabHelper.getResponseDesc(response);
+      }
+      else {
+          mMessage = message + " (response: " + IabHelper.getResponseDesc(response) + ")";
+      }
+      mSubscriptionsSupported = subscriptionsSupported;
+    }
+
     public int getResponse() { return mResponse; }
     public String getMessage() { return mMessage; }
+    public boolean getSubscriptionsSupported() { return mSubscriptionsSupported; }
+    public void setSubscriptionsSupported(boolean subscriptionsSupported) { mSubscriptionsSupported = subscriptionsSupported; }
     public boolean isSuccess() { return mResponse == IabHelper.BILLING_RESPONSE_RESULT_OK; }
     public boolean isFailure() { return !isSuccess(); }
     public String toString() { return "IabResult: " + getMessage(); }
 }
-

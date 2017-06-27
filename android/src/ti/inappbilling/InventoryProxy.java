@@ -18,28 +18,28 @@ import ti.inappbilling.util.SkuDetails;
 @Kroll.proxy
 public class InventoryProxy extends KrollProxy {
     private Inventory inventory;
-    
+
     public InventoryProxy(Inventory inv) {
         super();
-        
+
         inventory = inv;
     }
-    
+
     @Kroll.method
     public boolean hasDetails(String sku) {
         return inventory.hasDetails(sku);
     }
-    
+
     /** Returns the listing details for an in-app product. */
     @Kroll.method
     public HashMap getDetails(String sku) {
         if (!inventory.hasDetails(sku)) {
             return null;
         }
-        
+
         HashMap<String, String> details = new HashMap<String, String>();
         SkuDetails skuDetails = inventory.getSkuDetails(sku);
-        
+
         details.put("productId", skuDetails.getSku());
         details.put("type", skuDetails.getType());
         details.put("price", skuDetails.getPrice());
@@ -47,7 +47,8 @@ public class InventoryProxy extends KrollProxy {
         details.put("description", skuDetails.getDescription());
         details.put("price_amount_micros", skuDetails.getPriceAmountMicros());
         details.put("price_currency_code", skuDetails.getPriceCurrencyCode());
-        
+        details.put("subscriptionPeriod", skuDetails.getSubscriptionPeriod());
+
         return details;
     }
 
@@ -62,10 +63,10 @@ public class InventoryProxy extends KrollProxy {
         if (purchase == null) {
             return null;
         }
-        
+
         return new PurchaseProxy(purchase);
     }
-    
+
     @Kroll.method
     public void erasePurchase(String sku) {
         inventory.erasePurchase(sku);
