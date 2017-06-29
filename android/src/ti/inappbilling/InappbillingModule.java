@@ -61,6 +61,8 @@ public class InappbillingModule extends KrollModule {
     @Kroll.constant
     public static final int RESULT_ERROR = IabHelper.BILLING_RESPONSE_RESULT_ERROR;
     @Kroll.constant
+    public static final int RESULT_ERROR_DISPOSED = 100;
+    @Kroll.constant
     public static final int RESULT_ITEM_ALREADY_OWNED = IabHelper.BILLING_RESPONSE_RESULT_ITEM_ALREADY_OWNED;
     @Kroll.constant
     public static final int RESULT_ITEM_NOT_OWNED = IabHelper.BILLING_RESPONSE_RESULT_ITEM_NOT_OWNED;
@@ -250,6 +252,7 @@ public class InappbillingModule extends KrollModule {
 
     private void _queryInventoryCallback(final KrollDict args, boolean doSetup)
     {
+      logDebug("_queryInventoryCallback requires setup: " + doSetup);
       if(doSetup)
       {
         String base64EncodedPublicKey = args.getString("publicKey");
@@ -314,6 +317,12 @@ public class InappbillingModule extends KrollModule {
         queryDetails = args.optBoolean("queryDetails", true);
         moreItemSkus = stringListFromDict(args, "moreItems", "queryInventory()");
         moreSubsSkus = stringListFromDict(args, "moreSubs", "queryInventory()");
+        if(mHelper.isDisposed())
+        {
+          logError("IAB helper disposed (onDestroy invoked)");
+          krollCallback.call(getKrollObject(), createEventObjectWithResult(new IabResult(RESULT_ERROR_DISPOSED, "IabHelper disposed before executing queryInventory. Try again..."), null, null));
+          return;
+        }
         final boolean mSubscriptionsSupported = mHelper.subscriptionsSupported();
 
         try

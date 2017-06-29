@@ -7,6 +7,7 @@
 package ti.inappbilling;
 
 import java.util.HashMap;
+import java.util.List;
 
 import org.appcelerator.kroll.KrollProxy;
 import org.appcelerator.kroll.annotations.Kroll;
@@ -14,6 +15,7 @@ import org.appcelerator.kroll.annotations.Kroll;
 import ti.inappbilling.util.Inventory;
 import ti.inappbilling.util.Purchase;
 import ti.inappbilling.util.SkuDetails;
+import ti.inappbilling.util.IabHelper;
 
 @Kroll.proxy
 public class InventoryProxy extends KrollProxy {
@@ -70,5 +72,16 @@ public class InventoryProxy extends KrollProxy {
     @Kroll.method
     public void erasePurchase(String sku) {
         inventory.erasePurchase(sku);
+    }
+
+    @Kroll.method
+    public Object[] getOwnedSubscriptions()
+    {
+      List<String> aux = inventory.getAllOwnedSkus(IabHelper.ITEM_TYPE_SUBS);
+      if(aux.size() == 0)
+      {
+        return null;
+      }
+      return aux.toArray();
     }
 }
