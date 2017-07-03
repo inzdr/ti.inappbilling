@@ -240,13 +240,28 @@ public class InappbillingModule extends KrollModule {
       checkRequired(args, "publicKey");
       checkRequired(args, "callback");
 
-      if(setupRequired())
+      Object callback = args.get("callback");
+      final KrollFunction krollCallback = callback instanceof KrollFunction ? (KrollFunction) callback : null;
+      if(krollCallback == null)
       {
-        _queryInventoryCallback(args, true);
+        throw new IllegalArgumentException("Invalid argument type `callback` passed to queryInventoryCallback");
       }
-      else
+
+      try
       {
-        _queryInventoryCallback(args, false);
+        if(setupRequired())
+        {
+          _queryInventoryCallback(args, true);
+        }
+        else
+        {
+          _queryInventoryCallback(args, false);
+        }
+      }
+      catch(Exception ex)
+      {
+        logError(ex.getMessage());
+        krollCallback.call(getKrollObject(), createEventObjectWithResult(new IabResult(RESULT_ERROR, "IabHelper Exception: " + ex.getMessage()), null, null));
       }
     }
 

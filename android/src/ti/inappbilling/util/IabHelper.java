@@ -654,15 +654,20 @@ public class IabHelper {
                     // inv = queryInventory(querySkuDetails, moreSkus);
                 	inv = queryInventory(querySkuDetails, moreItemSkus, moreSubsSkus);
                 }
-                catch (IabException ex) {
-                    result = ex.getResult();
+                catch (IabException iabex) {
+                    result = iabex.getResult();
+                }
+                catch (Exception ex) {
+                  logError("Exception querying inventory: " + ex.getMessage());
+                    result = new IabResult(IABHELPER_ERROR_BASE, "Exception querying inventory: " + ex.getMessage());
                 }
 
                 flagEndAsync();
 
                 final IabResult result_f = result;
                 final Inventory inv_f = inv;
-                if (!mDisposed && listener != null) {
+                //if (!mDisposed && listener != null) {
+                if (listener != null) {
                     handler.post(new Runnable() {
                         public void run() {
                             listener.onQueryInventoryFinished(result_f, inv_f);
@@ -872,7 +877,7 @@ public class IabHelper {
     int queryPurchases(Inventory inv, String itemType) throws JSONException, RemoteException {
         // Query purchases
         logDebug("Querying owned items, item type: " + itemType);
-        logDebug("Package name: " + mContext.getPackageName());
+        //logDebug("Package name: " + mContext.getPackageName());
         boolean verificationFailed = false;
         String continueToken = null;
 
