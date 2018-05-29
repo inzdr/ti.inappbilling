@@ -1,0 +1,4 @@
+titanium.platform=/Users/phobeous/Library/Application Support/Titanium/mobilesdk/osx/7.1.2.inzdr/android
+android.platform=/Users/phobeous/Development/android-sdk-macosx/platforms/android-23
+android.ndk=/Users/phobeous/Development/android-ndk
+google.apis=/Users/phobeous/Development/android-sdk-macosx/add-ons/addon-google_apis-google-23

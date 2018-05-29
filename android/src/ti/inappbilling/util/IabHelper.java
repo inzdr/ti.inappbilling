@@ -912,6 +912,7 @@ public class IabHelper {
                 String sku = ownedSkus.get(i);
                 if (Security.verifyPurchase(mSignatureBase64, purchaseData, signature)) {
                     logDebug("Sku is owned: " + sku);
+                    logDebug("purchase JSON data:\n" + purchaseData);
                     Purchase purchase = new Purchase(itemType, purchaseData, signature);
 
                     if (TextUtils.isEmpty(purchase.getToken())) {
